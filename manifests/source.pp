@@ -9,18 +9,33 @@ define apt::source(
   $include_src       = false,
   $include_deb       = true,
   $key               = undef,
-  $key_server        = 'keyserver.ubuntu.com',
-  $key_content       = undef,
-  $key_source        = undef,
   $pin               = false,
   $architecture      = undef,
   $trusted_source    = false,
 ) {
-  validate_string($architecture, $comment, $location, $release, $repos, $key_server)
+  validate_string($architecture, $comment, $location, $release, $repos)
   validate_bool($trusted_source, $include_src, $include_deb)
 
   if ! $release {
     fail('lsbdistcodename fact not available: release parameter required')
+  }
+
+  if $key {
+    if is_hash($key) {
+      $key_id      = $key['id']
+      $key_server  = $key['server']
+      $key_content = $key['content']
+      $key_source  = $key['source']
+      $key_options = $key['options']
+    } elsif is_string($key) {
+      $key_id      = $key
+      $key_server  = undef
+      $key_content = undef
+      $key_source  = undef
+      $key_options = undef
+    } else {
+      fail('key must be either a hash or a string')
+    }
   }
 
   apt::setting { "list-${name}":
@@ -43,9 +58,9 @@ define apt::source(
 
   # We do not want to remove keys when the source is absent.
   if $key and ($ensure == 'present') {
-    apt::key { "Add key: ${key} from Apt::Source ${title}":
+    apt::key { "Add key: ${key_id} from Apt::Source ${title}":
       ensure  => present,
-      key     => $key,
+      key     => $key_id,
       server  => $key_server,
       content => $key_content,
       source  => $key_source,
