@@ -10,7 +10,7 @@ define apt::ppa(
     fail('lsbdistcodename fact not available: release parameter required')
   }
 
-  if $::operatingsystem != 'Ubuntu' {
+  if $::apt::distid != 'ubuntu' {
     fail('apt::ppa is currently supported on Ubuntu only.')
   }
 
