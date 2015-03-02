@@ -1,13 +1,19 @@
 # ppa.pp
 define apt::ppa(
   $ensure         = 'present',
-  $release        = $::lsbdistcodename,
+  $release        = undef,
   $options        = $::apt::ppa_options,
   $package_name   = $::apt::ppa_package,
   $package_manage = false,
 ) {
   if ! $release {
-    fail('lsbdistcodename fact not available: release parameter required')
+    if defined('$lsbdistcodename') {
+      $_release = $::lsbdistcodename
+    } else {
+      fail('lsbdistcodename fact not available: release parameter required')
+    }
+  } else {
+    $_release = $release
   }
 
   if $::apt::distid != 'ubuntu' {
@@ -17,7 +23,7 @@ define apt::ppa(
   $filename_without_slashes = regsubst($name, '/', '-', 'G')
   $filename_without_dots    = regsubst($filename_without_slashes, '\.', '_', 'G')
   $filename_without_ppa     = regsubst($filename_without_dots, '^ppa:', '', 'G')
-  $sources_list_d_filename  = "${filename_without_ppa}-${release}.list"
+  $sources_list_d_filename  = "${filename_without_ppa}-${_release}.list"
 
   if $ensure == 'present' {
     if $package_manage {

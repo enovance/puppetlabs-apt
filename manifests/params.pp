@@ -1,6 +1,6 @@
 class apt::params {
 
-  if $caller_module_name and $caller_module_name != $module_name {
+  if defined('$caller_module_name') and $caller_module_name and $caller_module_name != $module_name {
     fail('apt::params is a private class and cannot be accessed directly')
   }
 
@@ -68,7 +68,11 @@ class apt::params {
   case $::lsbdistid {
     'ubuntu', 'debian': {
       $distid = $::lsbdistid
-      $distcodename = $::lsbdistcodename
+      if defined('$lsbdistcodename') {
+        $distcodename = $::lsbdistcodename
+      } else {
+        $distcodename = undef
+      }
     }
     'linuxmint': {
       if $::lsbdistcodename == 'debian' {
@@ -112,6 +116,10 @@ class apt::params {
           $ppa_package        = 'software-properties-common'
         }
       }
+    }
+    '', default: {
+      $ppa_options = undef
+      $ppa_package = undef
     }
   }
 }

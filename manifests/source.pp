@@ -4,7 +4,7 @@ define apt::source(
   $comment           = $name,
   $ensure            = present,
   $location          = '',
-  $release           = $::lsbdistcodename,
+  $release           = undef,
   $repos             = 'main',
   $include_src       = false,
   $include_deb       = true,
@@ -13,11 +13,18 @@ define apt::source(
   $architecture      = undef,
   $trusted_source    = false,
 ) {
-  validate_string($architecture, $comment, $location, $release, $repos)
+  validate_string($architecture, $comment, $location, $repos)
   validate_bool($trusted_source, $include_src, $include_deb)
 
   if ! $release {
-    fail('lsbdistcodename fact not available: release parameter required')
+    if defined('$lsbdistcodename'){
+      $_release = $::lsbdistcodename
+    } else {
+      fail('lsbdistcodename fact not available: release parameter required')
+    }
+  } else {
+    validate_string($release)
+    $_release = $release
   }
 
   $_before = Apt::Setting["list-${title}"]
@@ -30,6 +37,7 @@ define apt::source(
       $_key = merge($::apt::source_key_defaults, $key)
     } else {
       validate_string($key)
+      $_key = $key
     }
   }
 
@@ -64,9 +72,9 @@ define apt::source(
         before  => $_before,
       }
     } else {
-      apt::key { "Add key: ${key} from Apt::Source ${title}":
+      apt::key { "Add key: ${_key} from Apt::Source ${title}":
         ensure => present,
-        id     => $key,
+        id     => $_key,
         before => $_before,
       }
     }
