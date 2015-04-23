@@ -19,7 +19,7 @@ describe 'apt::params', :type => :class do
     it do
       expect {
         is_expected.to compile
-      }.to raise_error(Puppet::Error, /Unable to determine lsbdistid, is lsb-release installed/)
+      }.to raise_error(Puppet::Error, /Unable to determine lsbdistid, please install lsb-release first/)
     end
   end
 

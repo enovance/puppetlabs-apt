@@ -10,6 +10,8 @@ The apt module automates obtaining and installing software packages on \*nix sys
 
 **Note**: While this module allows the use of short keys, **warnings are thrown if a full fingerprint is not used**, as they pose a serious security issue by opening you up to collision attacks.
 
+**Note**: For this module to be able to correctly auto detect which version of Debian/Ubuntu or derivative you're running you need to make sure the 'lsb-release' package is installed. We highly recommend making this part of your provisioning layer if you run many Debian or derivative systems or ensuring that you have at least Facter 2.2.0 installed which will pull in this dependency for you.
+
 ## Setup
 
 ### What apt affects:
