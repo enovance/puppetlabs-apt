@@ -40,7 +40,7 @@ class { 'apt': }
 ### Classes
 
 * `apt`: Main class, provides common resources and options. Allows Puppet to manage your system's sources.list file and sources.list.d directory. By default, it will not purge existing content it finds that wasn't declared with Puppet.
-  
+
   * `apt::backports`: This class adds the necessary components to get backports for Ubuntu and Debian. The release name defaults to "$lsbdistcodename-backports". Setting this manually can cause undefined and potentially serious behavior.
 
     By default, this class drops a pin-file for backports, pinning it to a priority of 200. This is lower than the normal Debian archive, which gets a priority of 500 to ensure that packages with `ensure => latest` don't get magically upgraded from backports without your explicit permission.
@@ -107,7 +107,7 @@ class { 'apt': }
     component       => 'main',
     label           => 'Debian'
   }
-  ```  
+  ```
 
   If you want to pin a number of packages, you can specify the packages as a space-delimited string using the `packages` attribute, or you can pass in an array of package names.
 
@@ -133,7 +133,7 @@ class { 'apt': }
       'deb' => true,
     },
   }
-  ```  
+  ```
 
   For example, to configure your system so the source is the Puppet Labs Apt repository:
 
@@ -189,9 +189,9 @@ apt::sources:
 * `update`: Hash to configure various update settings. Valid keys are:
   * 'frequency': The run frequency for `apt-get update`. Defaults to 'reluctantly'. Accepts the following values:
     * 'always': Runs update at every Puppet run.
-    * 'daily': Runs update daily; that is, `apt-get update` runs if the value of `apt\_update\_last\_success` is less than current epoch time - 86400. If the exec resource `apt\_update` is notified, `apt-get update` runs regardless of this value. 
-    * 'weekly': Runs update weekly; that is, `apt-get update` runs if the value of `apt\_update\_last\_success` is less than current epoch time - 604800. If the exec resource `apt\_update` is notified, `apt-get update` runs regardless of this value. 
-    * 'reluctantly': Only runs `apt-get update` if the exec resource `apt\_update` is notified. This is the default setting.  
+    * 'daily': Runs update daily; that is, `apt-get update` runs if the value of `apt\_update\_last\_success` is less than current epoch time - 86400. If the exec resource `apt\_update` is notified, `apt-get update` runs regardless of this value.
+    * 'weekly': Runs update weekly; that is, `apt-get update` runs if the value of `apt\_update\_last\_success` is less than current epoch time - 604800. If the exec resource `apt\_update` is notified, `apt-get update` runs regardless of this value.
+    * 'reluctantly': Only runs `apt-get update` if the exec resource `apt\_update` is notified. This is the default setting.
   * 'timeout': Overrides the exec timeout in seconds for `apt-get update`. Defaults to exec default (300).
   * 'tries': Sets how many times to attempt running `apt-get update`. Use this to work around transient DNS and HTTP errors. By default, the command runs only once.
 * `purge`: Hash to configure various purge settings. Valid keys are:
@@ -236,7 +236,7 @@ apt::sources:
 * `ensure`: The state we want this pin in. Can be 'present' or 'absent'.
 * `explanation`: Add a comment. Defaults to `${caller\_module\_name}: ${name}`.
 * `order`: The order of the file name. Defaults to undef, otherwise must be an integer.
-* `packages`: The list of packages to pin. Defaults to '\*'. Can be an array or string. 
+* `packages`: The list of packages to pin. Defaults to '\*'. Can be an array or string.
 * `priority`: Several versions of a package may be available for installation when the sources.list(5) file contains references to more than one distribution (for example, stable and testing). APT assigns a priority to each version that is available. Subject to dependency constraints, apt-get selects the version with the highest priority for installation.
 * `release`: The Debian release. Defaults to ''. Typical values can be 'stable', 'testing' and 'unstable'.
 * `origin`: Can be used to match a hostname. The following record will assign a high priority to all versions available from the server identified by the hostname. Defaults to ''.
